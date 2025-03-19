@@ -1,42 +1,185 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --bg-color: #1f2937;
+  --container-bg-color: #2d3748;
+  --panel-bg-color: #374151; 
+  --text-color: #f3f4f6;
+  --primary-color: #3b82f6;
+  --border-color: #4b5563;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --font-size-base: 16px;
   }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
+  
+  /* Reset some defaults */
+  *,
+  *::before,
+  *::after {
   margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+  padding: 0;
+  box-sizing: border-box;
   }
-}
+  
+  /* Body styling for dark theme */
+  html,
+  body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  }
+  
+  body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  }
+  
+  /* Main container: increased max-width for a wider layout */
+  main {
+  background-color: var(--container-bg-color);
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Headings */
+  main h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  }
+  
+  /* Form layout */
+  form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  }
+  
+  label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  }
+  
+  /* Collapsible Settings Panel */
+  .settings-container {
+  background-color: var(--panel-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  }
+  
+  /* Toggle button for Settings panel */
+  .toggle-settings {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  margin-bottom: 0.5rem;
+  }
+  
+  .toggle-settings:hover {
+  background-color: #2563eb;
+  }
+  
+
+  select,
+  input[type="range"],
+  input[type="number"] {
+  width: 100%;
+  max-width: 350px;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #1f2937;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  }
+  
+
+  textarea {
+  width: 100%;
+  min-height: 10rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-family: var(--font-family);
+  background-color: #1f2937;
+  color: var(--text-color);
+  resize: vertical;
+  }
+  
+  /* Checkbox styling */
+  .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+  }
+  
+  .checkbox-container label {
+  cursor: pointer;
+  font-size: 0.95rem;
+  }
+  
+  /* Submit button styling */
+  button[type="submit"] {
+  align-self: flex-start;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  }
+  
+  button[type="submit"]:hover {
+  background-color: #2563eb;
+  }
+  
+  /* Disabled button style */
+  button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  }
+  
+  /* Output section */
+  #outputSection {
+  margin-top: 1.5rem;
+  }
+  
+  #outputSection h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  }
+  
+  #outputSection pre {
+  background-color: #1f2937;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.4;
+  overflow-x: auto;
+  }

@@ -1,95 +1,210 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+// Toggle for showing/hiding settings
+const [showSettings, setShowSettings] = useState(true);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+// Model & user prompt
+const [model, setModel] = useState("babbage-002");
+const [prompt, setPrompt] = useState("");
+const [saveOutput, setSaveOutput] = useState(false);
+
+// Additional completion parameters
+const [temperature, setTemperature] = useState(0.7);
+const [maxTokens, setMaxTokens] = useState(100);
+const [topP, setTopP] = useState(1.0);
+const [frequencyPenalty, setFrequencyPenalty] = useState(0.0);
+const [presencePenalty, setPresencePenalty] = useState(0.0);
+
+// Result state and loading indicator
+const [result, setResult] = useState("");
+const [loading, setLoading] = useState(false);
+
+async function handleSubmit(e) {
+e.preventDefault();
+setLoading(true);
+setResult("");
+
+try {
+  const response = await fetch("/api/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      userInput: prompt,
+      saveOutput,
+      temperature: parseFloat(temperature),
+      maxTokens: parseInt(maxTokens),
+      topP: parseFloat(topP),
+      frequencyPenalty: parseFloat(frequencyPenalty),
+      presencePenalty: parseFloat(presencePenalty),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Request failed");
+  }
+
+  const data = await response.json();
+  setResult(data.result);
+} catch (error) {
+  console.error("Error in handleSubmit:", error);
+  setResult("Error: " + error.message);
+} finally {
+  setLoading(false);
+}
+}
+
+return (
+<main>
+<h1>OpenAI Legacy Completions</h1>
+
+  <form onSubmit={handleSubmit}>
+    {/* Toggle button to show/hide the Settings panel */}
+    <button
+      type="button"
+      className="toggle-settings"
+      onClick={() => setShowSettings(!showSettings)}
+    >
+      {showSettings ? "Hide Settings" : "Show Settings"}
+    </button>
+
+    {/* Collapsible Settings Box */}
+    {showSettings && (
+      <div className="settings-container">
+        {/* Model selection */}
+        <div>
+          <label htmlFor="model">Model:</label>
+          <select
+            id="model"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+            <option value="babbage-002">babbage-002</option>
+            <option value="davinci-002">davinci-002</option>
+            <option value="gpt-3.5-turbo-instruct">
+              gpt-3.5-turbo-instruct
+            </option>
+          </select>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* Temperature */}
+        <div>
+          <label htmlFor="temperature">
+            Temperature: {temperature}
+          </label>
+          <input
+            type="range"
+            id="temperature"
+            min="0"
+            max="1"
+            step="0.01"
+            value={temperature}
+            onChange={(e) => setTemperature(e.target.value)}
           />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+        </div>
+
+        {/* Max Tokens */}
+        <div>
+          <label htmlFor="maxTokens">
+            Max Tokens: {maxTokens}
+          </label>
+          <input
+            type="range"
+            id="maxTokens"
+            min="1"
+            max="2048"
+            step="1"
+            value={maxTokens}
+            onChange={(e) => setMaxTokens(e.target.value)}
           />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+        </div>
+
+        {/* Top P */}
+        <div>
+          <label htmlFor="topP">Top P: {topP}</label>
+          <input
+            type="range"
+            id="topP"
+            min="0"
+            max="1"
+            step="0.01"
+            value={topP}
+            onChange={(e) => setTopP(e.target.value)}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+
+        {/* Frequency Penalty */}
+        <div>
+          <label htmlFor="freqPen">
+            Frequency Penalty: {frequencyPenalty}
+          </label>
+          <input
+            type="range"
+            id="freqPen"
+            min="0"
+            max="2"
+            step="0.1"
+            value={frequencyPenalty}
+            onChange={(e) => setFrequencyPenalty(e.target.value)}
+          />
+        </div>
+
+        {/* Presence Penalty */}
+        <div>
+          <label htmlFor="presPen">
+            Presence Penalty: {presencePenalty}
+          </label>
+          <input
+            type="range"
+            id="presPen"
+            min="0"
+            max="2"
+            step="0.1"
+            value={presencePenalty}
+            onChange={(e) => setPresencePenalty(e.target.value)}
+          />
+        </div>
+
+        {/* Checkbox for saving output */}
+        <div className="checkbox-container">
+          <input
+            type="checkbox"
+            id="saveOutput"
+            checked={saveOutput}
+            onChange={(e) => setSaveOutput(e.target.checked)}
+          />
+          <label htmlFor="saveOutput">Save output to file</label>
+        </div>
+      </div>
+    )}
+
+    {/* Prompt textarea */}
+    <div>
+      <label htmlFor="prompt">Enter Prompt:</label>
+      <textarea
+        id="prompt"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Your prompt here..."
+      />
     </div>
-  );
+
+    {/* Submit Button */}
+    <button type="submit" disabled={loading}>
+      {loading ? "Generating..." : "Generate"}
+    </button>
+  </form>
+
+  {/* Output */}
+  {result && (
+    <div id="outputSection">
+      <h2>Output:</h2>
+      <pre>{result}</pre>
+    </div>
+  )}
+</main>
+);
 }
